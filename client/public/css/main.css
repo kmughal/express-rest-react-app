@@ -1,0 +1,106 @@
+nav {
+	background: green;
+}
+
+nav ul {
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+nav ul li {
+	display: flex;
+	margin: 0 1rem;
+	padding: 1rem;
+}
+
+nav ul li a {
+	text-decoration: none;
+	color: white;
+}
+
+article {
+	border: 1px dashed black;
+	margin: 1rem 1rem;
+	padding: 1rem 1rem;
+}
+
+.form-control {
+	margin: auto;
+	padding: 1rem 1rem;
+	width: 50%;
+}
+
+.form-control input,
+textarea {
+	width: 80%;
+	border: 1px solid green;
+	height: 2rem;
+}
+
+.form-control label {
+	display: block;
+}
+
+.form-control button,
+.action-button {
+	text-align: center;
+	background: green;
+	color: white;
+	height: 50px;
+	width: 200px;
+	border-radius: 2px 2px;
+}
+
+form-control button:hover,
+.action-button:hover {
+	background: white;
+	color: green;
+	cursor: hand;
+}
+
+#submit--results .alert--danger {
+	color: red;
+}
+
+img {
+	height: 200px;
+	width: 200px;
+}
+
+.edit-post-container {
+	border: 1px solid black;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	width: 98%;
+	height: 98%;
+	background: black;
+	border-radius: 10px 10px;
+	top: 0px;
+}
+
+.edit-post-form {
+	margin: auto;
+	position: relative;
+	top: 50%;
+	width: 90%;
+	background: white;
+	opacity: 1;
+}
+
+.action-buttons {
+	margin: auto;
+	text-align: center;
+}
+
+.top-action {
+	display: flex;
+}
+
+.top-action a {
+	text-decoration: none;
+	margin: 10px 10px;
+	padding: 10px 10px;
+	justify-items: right
+}
