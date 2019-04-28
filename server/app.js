@@ -7,6 +7,10 @@ const mongoose = require("mongoose");
 const { AuthMiddleware } = require("./middlewares/is-auth");
 const cors = require("cors");
 
+// Graph ql
+const graphSchema = require("./graphql/schema");
+const graphResolver = require("./graphql/resolver");
+const expressGraphql = require("express-graphql");
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => cb(null, "images"),
@@ -31,12 +35,30 @@ app.use(bodyParser.json());
 app.use(multer({ storage, fileFilter }).single("image"));
 app.use("/images", express.static(path.resolve(__dirname, "images")));
 
-app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*");
-	res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PUT,DELETE");
-	res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
-	next();
-});
+app.use(
+	"/graphql",
+	expressGraphql({
+		schema: graphSchema.Schema,
+		rootValue: graphResolver.Root,
+		graphiql: true,
+		formatError(err) {
+			if (!err.originalError) {
+				throw err;
+			}
+			const messages = [err.originalError.message || "Error has occured"];
+			const statusCode = 500;
+
+			return { messages, statusCode };
+		}
+	})
+);
+
+// app.use((req, res, next) => {
+// 	res.setHeader("Access-Control-Allow-Origin", "*");
+// 	res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PUT,DELETE");
+// 	res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+// 	next();
+// });
 
 // app.use("/posts", AuthMiddleware, postRoutes);
 // app.use("/auth", authRoutes);
@@ -63,7 +85,7 @@ mongoose
 		// const {IoFactory} = require("./infrastructure/io-factory")
 		// IoFactory.init((server));
 		// const io = IoFactory.get();
-		
+
 		// io.on("connect" , listner=> {
 		// 	console.log(listner)
 		// })
