@@ -3,6 +3,9 @@ const { PostModel } = require("../models/post");
 const { deleteImage } = require("../commons/file-helpers");
 const { UserModel } = require("../models/user");
 
+const { IoFactory } = require("../infrastructure/io-factory");
+
+
 let self = null;
 
 class PostController {
@@ -34,6 +37,8 @@ class PostController {
 		user.posts.pull(id);
 		await user.save();
 		const posts = await PostModel.find({});
+		const io = IoFactory.get();
+		io.emit("posts" , {action : "delete-post" , posts , post});
 		res.json(posts);
 	}
 
@@ -74,7 +79,10 @@ class PostController {
 		const user = await UserModel.findById(req.userid);
 		user.posts.push(newPost);
 		await user.save();
+		
 		const posts = await PostModel.find({});
+		const io = IoFactory.get();
+		io.emit("posts", { action: "post-created", posts, newPost });
 		res.status(201).json(posts);
 	}
 
@@ -97,8 +105,10 @@ class PostController {
 		await post.save();
 		const user = await UserModel.findById(req.userid);
 
-		const allposts = await PostModel.find({});
-		return res.json(allposts);
+		const posts = await PostModel.find({});
+		const io = IoFactory.get();
+		io.emit("posts" , {action : "updated-post" , posts , post});
+		return res.json(posts);
 	}
 }
 
