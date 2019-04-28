@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import * as Socket from "socket.io-client";
+// import * as Socket from "socket.io-client";
 import { PostService } from "../services/post-service";
 import { EditComponent } from "./edit-post";
 
@@ -14,11 +14,11 @@ export class PostComponents extends React.Component {
 			selectedPost: { title: "", content: "" }
 		};
 		this.getPosts();
-		const io = Socket("http://localhost:8000/");
-		io.on("posts", data => {
-			console.log(data);
-			this.setState({ posts: data.posts });
-		});
+		// const io = Socket("http://localhost:8000/");
+		// io.on("posts", data => {
+		// 	console.log(data);
+		// 	this.setState({ posts: data.posts });
+		// });
 	}
 
 	getPosts() {
