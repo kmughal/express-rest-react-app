@@ -3,8 +3,33 @@ const { UserModel } = require("../models/user");
 const { PostModel } = require("../models/post");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
-
+const {deleteImage} = require("../commons/file-helpers")
 exports.Root = {
+	deletePost : async(args,req) => {
+	  if (!req.isAuth) throw new Error("Auth token is required to delete a post!");
+		const id = args.id;
+
+		if (!id) {
+			return next(new Error("Post id not found"));
+		}
+		const post = await PostModel.findById(id);
+		if (!post) {
+			return next(new Error("No post found"));
+		}
+
+		const imagePath = post.image;
+		deleteImage(imagePath)
+			.then(v => v)
+			.catch(e => console.log(e));
+		await PostModel.deleteOne({ _id: id });
+		const user = await UserModel.findById(req.userid);
+		user.posts.pull(id);
+		await user.save();
+		const posts = await PostModel.find({});
+		// const io = IoFactory.get();
+		// io.emit("posts" , {action : "delete-post" , posts , post});
+		return (posts);
+	},
 	editPost : async(args,req) => {
 	  
 		if (!req.isAuth) throw new Error("Auth token missing!");
@@ -19,7 +44,7 @@ exports.Root = {
 		post.content = updatedContent;
 		console.log("Edit post",updatedImage,updatedTitle , updatedContent)
 		if (updatedImage) {
-			//await deleteImage(post.image);
+			await deleteImage(post.image);
 			post.image = updatedImage;
 		}
 	 

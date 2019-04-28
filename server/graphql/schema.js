@@ -31,6 +31,7 @@ var schema = buildSchema(`
     createUser(registerUserRequest: RegisterUser) : User!
     createPost(title:String!,content:String!,imageUrl:String!) : [Post]
     editPost(id:ID!,title:String!,content:String!,imageUrl:String!) : [Post]
+    deletePost(id:ID!) : [Post]
   }
 
   type Post { 

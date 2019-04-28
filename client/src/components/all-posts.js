@@ -43,7 +43,7 @@ export class PostComponents extends React.Component {
 		const self = this;
 		service
 			.deletePost(post._id)
-			.then(res => res.text())
+			//.then(res => res.text())
 			.then(posts => {
 				self.postUpdaed(posts);
 			});
@@ -61,7 +61,7 @@ export class PostComponents extends React.Component {
 	postUpdaed(posts) {
 		console.log("posts:", posts);
 		this.setState({
-			posts: JSON.parse(posts),
+			posts: (posts),
 			editPost: false,
 			selectedPost: { title: "", content: "" }
 		});

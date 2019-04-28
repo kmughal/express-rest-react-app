@@ -28,15 +28,25 @@ export class PostService {
 	}
 
 	deletePost(id) {
-		const data = new FormData();
-		data.append("id", id);
+		
+		const query = {
+			query : `
+			mutation {
+				deletePost(id :"${id}") {
+				 title
+			 }
+			 }
+			`
+		}
+	
 		return fetch(SERVICE_URL, {
-			method: "DELETE",
-			body: data,
+			method: "POST",
+			body: JSON.stringify(query),
 			headers: {
-				Authorization: "Bearer " + localStorage.getItem("token")
+				Authorization: "Bearer " + localStorage.getItem("token"),
+				"content-type" : "application/json"
 			}
-		});
+		}).then(res => res.json()).then(data => data.data.deletePost);
 	}
 
 	updatePost(id, title, content, image) {
