@@ -1,27 +1,9 @@
 import React, { useState, useEffect } from "react";
-
+import * as Socket from "socket.io-client";
 import { PostService } from "../services/post-service";
 import { EditComponent } from "./edit-post";
 
 const service = new PostService();
-
-// export const PostComponents = () => {
-// 	const [posts, setPosts] = useState(Î{posts : []});
-
-// 	useEffect(async () => {
-//     const result = await service.getAllPosts();
-//     console.log(result)
-// 		setPosts(result);
-//   });
-
-// 	console.log(posts);
-// 	return <div>hello world</div>;
-// };
-
-// export const PostComponents = () => {
-
-// 	return <div>hello world</div>;
-// };
 
 export class PostComponents extends React.Component {
 	constructor() {
@@ -32,6 +14,11 @@ export class PostComponents extends React.Component {
 			selectedPost: { title: "", content: "" }
 		};
 		this.getPosts();
+		const io = Socket("http://localhost:8000/");
+		io.on("posts", data => {
+			console.log(data);
+			this.setState({ posts: data.posts });
+		});
 	}
 
 	getPosts() {
@@ -54,10 +41,12 @@ export class PostComponents extends React.Component {
 
 	async deletePost(post) {
 		const self = this;
-		service.deletePost(post._id).then(res => res.text()).then(posts=> {
-			self.postUpdaed(posts)
-		})
-	 
+		service
+			.deletePost(post._id)
+			.then(res => res.text())
+			.then(posts => {
+				self.postUpdaed(posts);
+			});
 	}
 
 	discardEdit() {
@@ -70,16 +59,15 @@ export class PostComponents extends React.Component {
 	}
 
 	postUpdaed(posts) {
-		console.log("posts:",posts)
+		console.log("posts:", posts);
 		this.setState({
-			posts:JSON.parse(posts),
+			posts: JSON.parse(posts),
 			editPost: false,
 			selectedPost: { title: "", content: "" }
 		});
 	}
 
 	render() {
-		
 		const posts = this.state.posts;
 		const postsMarkup =
 			posts.length === 0 ? (
@@ -94,7 +82,7 @@ export class PostComponents extends React.Component {
 								<time>{post.updatedAt}</time> {post.title}
 							</h1>
 							<p>{post.content}</p>
-							<img src={image}/>
+							<img src={image} />
 							<div>
 								<h2>Actions</h2>
 								<div className="post-action-buttons">
@@ -122,7 +110,9 @@ export class PostComponents extends React.Component {
 					editPost={this.state.editPost}
 					post={this.state.selectedPost}
 					closeModal={() => this.discardEdit()}
-					postUpdaed ={(posts)=> {this.postUpdaed(posts)}}
+					postUpdaed={posts => {
+						this.postUpdaed(posts);
+					}}
 				/>
 				{postsMarkup}
 			</section>
