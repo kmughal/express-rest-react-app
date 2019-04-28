@@ -53,12 +53,22 @@ const SERVER_PORT = 8000;
 mongoose
 	.connect(dburl, { useNewUrlParser: true })
 	.then(v => {
-		app.listen(SERVER_PORT, () =>
+		const server = app.listen(SERVER_PORT, () =>
 			console.log(
 				"started server at port # ,",
 				SERVER_PORT,
 				new Date().toISOString()
 			)
 		);
+		const {IoFactory} = require("./infrastructure/io-factory")
+		IoFactory.init((server));
+		const io = IoFactory.get();
+		
+		io.on("connect" , listner=> {
+			console.log(listner)
+		})
+		io.on("connection", listner=> {
+			console.log("connected");
+		})
 	})
 	.catch(e => console.log("Error: ", e));
