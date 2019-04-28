@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PostService } from "../services/post-service";
+import { PostService } from "../graphql-services/post-service"
 export const EditComponent = props => {
 	const style = {
 		display: props.editPost ? "block" : "none"
@@ -23,7 +23,7 @@ export const EditComponent = props => {
 
 						service
 							.updatePost(id, title, content, image)
-							.then(response => response.text())
+							.then(response => response.json())
 							.then(posts => props.postUpdaed(posts))
 							.catch(e => console.log(e));
 						event.preventDefault();

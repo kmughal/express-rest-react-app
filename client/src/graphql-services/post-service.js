@@ -40,20 +40,33 @@ export class PostService {
 	}
 
 	updatePost(id, title, content, image) {
-		const data = new FormData();
-		data.append("id", id);
-		data.append("title", title);
-		data.append("content", content);
-		data.append("image", image);
-
-		return fetch(SERVICE_URL, {
-			body: data,
-			method: "PUT",
-			headers: {
-				Authorization: "Bearer " + localStorage.getItem("token")
+  
+		return this.uploadImage(image)
+		.then(res => res.json())
+		.then(data => data.data.filePath)
+		.then(imageUrl => {
+		 
+			const query = {
+				query : `mutation {
+				  editPost(id:"${id}", title :"${title}" ,content :"${content}" , imageUrl :"${imageUrl}") {
+						title
+					}
+				}`
 			}
-		});
+
+			 
+			return fetch(SERVICE_URL, {
+				body: JSON.stringify(query),
+				method: "POST",
+				headers: {
+					"CONTENT-TYPE" : "application/json",
+					Authorization: "Bearer " + localStorage.getItem("token")
+				}
+			});
+		})
 	}
+
+
 	uploadImage(image) {
 		const formData = new FormData();
 		formData.append("image", image);

@@ -80,8 +80,10 @@ app.use((error, req, res, next) => {
 
 // In conjuction with GraphQL
 app.put("/upload-image" , async(req,res,next) => {
+	console.log("in upload")
 	if (!req.isAuth) throw new Error("Not authenticated");
 	if (!req.file) return new next(new Error("no file attached"));
+	console.log(req.file.path)
 	res.status(200).json({ message : "image uploaded successfully" , data : { filePath : req.file.path} });
 })
 

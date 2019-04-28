@@ -5,6 +5,29 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 
 exports.Root = {
+	editPost : async(args,req) => {
+	  
+		if (!req.isAuth) throw new Error("Auth token missing!");
+		const id = args.id;
+		const post = await PostModel.findOne({ _id: id });
+		 
+		const updatedTitle = args.title,
+			updatedContent = args.content,
+			updatedImage = args.imageUrl;
+
+		post.title = updatedTitle;
+		post.content = updatedContent;
+		console.log("Edit post",updatedImage,updatedTitle , updatedContent)
+		if (updatedImage) {
+			//await deleteImage(post.image);
+			post.image = updatedImage;
+		}
+	 
+		await post.save();
+		const posts = await PostModel.find({});
+		return posts;
+
+	},
 	getPosts: async (_,req) => {
     
     if (!req.isAuth) throw new Error("Auth token is missing")
