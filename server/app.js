@@ -35,13 +35,27 @@ app.use(bodyParser.json());
 app.use(multer({ storage, fileFilter }).single("image"));
 app.use("/images", express.static(path.resolve(__dirname, "images")));
 
+
+app.use((req, res, next) => {
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PUT,DELETE");
+	res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+	if (req.method === "OPTOINS") {
+		return res.sendStatus(200);
+	}
+	next();
+});
+
+app.use(AuthMiddleware);
+
 app.use(
 	"/graphql",
 	expressGraphql({
 		schema: graphSchema.Schema,
 		rootValue: graphResolver.Root,
 		graphiql: true,
-		formatError(err) {
+		customFormatErrorFn(err) {
+			
 			if (!err.originalError) {
 				throw err;
 			}
@@ -53,12 +67,7 @@ app.use(
 	})
 );
 
-// app.use((req, res, next) => {
-// 	res.setHeader("Access-Control-Allow-Origin", "*");
-// 	res.setHeader("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PUT,DELETE");
-// 	res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
-// 	next();
-// });
+
 
 // app.use("/posts", AuthMiddleware, postRoutes);
 // app.use("/auth", authRoutes);
@@ -68,6 +77,13 @@ app.use((error, req, res, next) => {
 	error.statusCode = error.statusCode || 500;
 	res.status(error.statusCode).json(error.messages || ["Error has occured!"]);
 });
+
+// In conjuction with GraphQL
+app.put("/upload-image" , async(req,res,next) => {
+	if (!req.isAuth) throw new Error("Not authenticated");
+	if (!req.file) return new next(new Error("no file attached"));
+	res.status(200).json({ message : "image uploaded successfully" , data : { filePath : req.file.path} });
+})
 
 const { dburl } = require("./settings");
 const SERVER_PORT = 8000;
