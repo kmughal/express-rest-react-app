@@ -38,8 +38,8 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use("/posts", AuthMiddleware, postRoutes);
-app.use("/auth", authRoutes);
+// app.use("/posts", AuthMiddleware, postRoutes);
+// app.use("/auth", authRoutes);
 
 app.use((error, req, res, next) => {
 	console.log(error);
@@ -60,15 +60,15 @@ mongoose
 				new Date().toISOString()
 			)
 		);
-		const {IoFactory} = require("./infrastructure/io-factory")
-		IoFactory.init((server));
-		const io = IoFactory.get();
+		// const {IoFactory} = require("./infrastructure/io-factory")
+		// IoFactory.init((server));
+		// const io = IoFactory.get();
 		
-		io.on("connect" , listner=> {
-			console.log(listner)
-		})
-		io.on("connection", listner=> {
-			console.log("connected");
-		})
+		// io.on("connect" , listner=> {
+		// 	console.log(listner)
+		// })
+		// io.on("connection", listner=> {
+		// 	console.log("connected");
+		// })
 	})
 	.catch(e => console.log("Error: ", e));
