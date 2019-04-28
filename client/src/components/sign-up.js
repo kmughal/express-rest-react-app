@@ -1,5 +1,6 @@
 import * as React from "react";
-import { AuthService } from "../services/auth-service";
+import { AuthService } from "../graphql-services/auth-service";
+
 
 export class SignupComponent extends React.Component {
 	constructor() {
@@ -36,6 +37,7 @@ export class SignupComponent extends React.Component {
 		this.authService
 			.signup(this.state.name, this.state.email, this.state.password)
 			.then(res => {
+				console.log(res);
 				if (res.status === 200) {
 					this.setState({
 						accountCreated: true,
@@ -50,11 +52,15 @@ export class SignupComponent extends React.Component {
 					});
 				}
 
-				return res.text();
+				return res.json();
 			})
-			.then(errors => {
+			.then(data => {
+				console.log(data);
+			  window.data = data
 				if (!this.state.accountCreated) {
-					this.setState({ errors: JSON.parse(errors) });
+					const errors = data.errors[0].messages;
+					console.log(errors)
+					this.setState({ errors: errors });
 					console.log(this.state);
 				}
 			})
