@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import * as Socket from "socket.io-client";
-import { PostService } from "../services/post-service";
+import { PostService } from "../graphql-services/post-service"
 import { EditComponent } from "./edit-post";
 
 const service = new PostService();
