@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AuthService } from "../services/auth-service";
+import { AuthService } from "../graphql-services/auth-service";
 
 export class SigninComponent extends React.Component {
 	constructor() {
@@ -32,12 +32,13 @@ export class SigninComponent extends React.Component {
 				return res.json();
 			})
 			.then(data => {
-			 
+			  
 				if (this.state.errorsOccured) {
-					this.setState({ errors: data });
+					const errors = data.errors[0].messages;
+					this.setState({ errors });
 				} else {
-					if (data.token) {
-						localStorage.setItem("token" , data.token);
+					if (data.data.signIn.token) {
+						localStorage.setItem("token" , data.data.signIn.token);
 						this.props.history.push("/all-posts");
 					}
 				}
