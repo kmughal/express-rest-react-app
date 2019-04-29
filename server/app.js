@@ -10,6 +10,10 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const fs = require("fs");
+const https = require("https");
+
+const cert = fs.readFileSync("server.cert");
+const key = fs.readFileSync("server.key");
 
 // Graph ql
 const graphSchema = require("./graphql/schema");
@@ -107,13 +111,22 @@ const SERVER_PORT = process.env.SERVER_PORT || 8000;
 mongoose
 	.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
 	.then(v => {
-		const server = app.listen(SERVER_PORT, () =>
-			console.log(
-				"started server at port # ,",
-				SERVER_PORT,
-				new Date().toISOString()
-			)
-		);
+		https
+			.createServer({ cert: cert, key: key }, app)
+			.listen(SERVER_PORT, () => {
+				console.log(
+					"started server at port # ,",
+					SERVER_PORT,
+					new Date().toISOString()
+				);
+			});
+		// const server = app.listen(SERVER_PORT, () =>
+		// 	console.log(
+		// 		"started server at port # ,",
+		// 		SERVER_PORT,
+		// 		new Date().toISOString()
+		// 	)
+		// );
 		// const {IoFactory} = require("./infrastructure/io-factory")
 		// IoFactory.init((server));
 		// const io = IoFactory.get();
