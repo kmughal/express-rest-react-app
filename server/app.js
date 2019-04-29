@@ -6,9 +6,10 @@ const multer = require("multer");
 const mongoose = require("mongoose");
 const { AuthMiddleware } = require("./middlewares/is-auth");
 const cors = require("cors");
-const helmet = require('helmet')
-const compression = require('compression');
+const helmet = require("helmet");
+const compression = require("compression");
 const morgan = require("morgan");
+const fs = require("fs");
 
 // Graph ql
 const graphSchema = require("./graphql/schema");
@@ -34,16 +35,19 @@ const { postRoutes } = require("./routes/post");
 const { authRoutes } = require("./routes/auth");
 
 // Middlewares //
+const logStream = fs.createWriteStream(
+	path.join(__dirname, "logs", "log.txt"),
+	{ flags: "a" }
+);
 
 app.use(compression());
 app.use(helmet());
 app.use(cors());
-app.use(morgan("combined"));
+app.use(morgan("combined", { stream: logStream }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(multer({ storage, fileFilter }).single("image"));
 app.use("/images", express.static(path.resolve(__dirname, "images")));
-
 
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "*");
@@ -64,7 +68,6 @@ app.use(
 		rootValue: graphResolver.Root,
 		graphiql: true,
 		customFormatErrorFn(err) {
-			
 			if (!err.originalError) {
 				throw err;
 			}
@@ -75,7 +78,6 @@ app.use(
 		}
 	})
 );
-
 
 // Middlewares //
 
@@ -89,14 +91,16 @@ app.use((error, req, res, next) => {
 });
 
 // In conjuction with GraphQL
-app.put("/upload-image" , async(req,res,next) => {
-	console.log("in upload")
+app.put("/upload-image", async (req, res, next) => {
+	console.log("in upload");
 	if (!req.isAuth) throw new Error("Not authenticated");
 	if (!req.file) return new next(new Error("no file attached"));
-	console.log(req.file.path)
-	res.status(200).json({ message : "image uploaded successfully" , data : { filePath : req.file.path} });
-})
-
+	console.log(req.file.path);
+	res.status(200).json({
+		message: "image uploaded successfully",
+		data: { filePath: req.file.path }
+	});
+});
 
 const SERVER_PORT = process.env.SERVER_PORT || 8000;
 
