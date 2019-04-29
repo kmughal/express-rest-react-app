@@ -4,3 +4,5 @@ launch.json
 settings.js
 nodemon.json
 logs
+server.key
+server.cert
