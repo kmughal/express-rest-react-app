@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "node app",
+    "start:dev": "nodemon app"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "express-graphql": "^0.8.0",
     "express-validator": "^5.3.1",
     "graphql": "^14.2.1",
+    "helmet": "^3.16.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.2",
     "multer": "^1.4.1",
