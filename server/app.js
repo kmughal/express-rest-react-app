@@ -8,7 +8,7 @@ const { AuthMiddleware } = require("./middlewares/is-auth");
 const cors = require("cors");
 const helmet = require('helmet')
 const compression = require('compression');
-
+const morgan = require("morgan");
 
 // Graph ql
 const graphSchema = require("./graphql/schema");
@@ -34,9 +34,11 @@ const { postRoutes } = require("./routes/post");
 const { authRoutes } = require("./routes/auth");
 
 // Middlewares //
+
 app.use(compression());
 app.use(helmet());
 app.use(cors());
+app.use(morgan("combined"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(multer({ storage, fileFilter }).single("image"));
@@ -95,11 +97,11 @@ app.put("/upload-image" , async(req,res,next) => {
 	res.status(200).json({ message : "image uploaded successfully" , data : { filePath : req.file.path} });
 })
 
-const { dburl } = require("./settings");
+
 const SERVER_PORT = process.env.SERVER_PORT || 8000;
 
 mongoose
-	.connect(process.env.MONGO_DB, { useNewUrlParser: true })
+	.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
 	.then(v => {
 		const server = app.listen(SERVER_PORT, () =>
 			console.log(
