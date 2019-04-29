@@ -6,6 +6,9 @@ const multer = require("multer");
 const mongoose = require("mongoose");
 const { AuthMiddleware } = require("./middlewares/is-auth");
 const cors = require("cors");
+const helmet = require('helmet')
+const compression = require('compression');
+
 
 // Graph ql
 const graphSchema = require("./graphql/schema");
@@ -29,6 +32,10 @@ const fileFilter = (req, file, cb) => {
 
 const { postRoutes } = require("./routes/post");
 const { authRoutes } = require("./routes/auth");
+
+// Middlewares //
+app.use(compression());
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -68,6 +75,7 @@ app.use(
 );
 
 
+// Middlewares //
 
 // app.use("/posts", AuthMiddleware, postRoutes);
 // app.use("/auth", authRoutes);
@@ -88,10 +96,10 @@ app.put("/upload-image" , async(req,res,next) => {
 })
 
 const { dburl } = require("./settings");
-const SERVER_PORT = 8000;
+const SERVER_PORT = process.env.SERVER_PORT || 8000;
 
 mongoose
-	.connect(dburl, { useNewUrlParser: true })
+	.connect(process.env.MONGO_DB, { useNewUrlParser: true })
 	.then(v => {
 		const server = app.listen(SERVER_PORT, () =>
 			console.log(
