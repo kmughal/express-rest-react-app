@@ -1,4 +1,4 @@
-const SERVICE_URL = "https://localhost:8000/posts";
+const SERVICE_URL = "http://localhost:8000/posts";
 
 export class PostService {
 	async getAllPosts() {

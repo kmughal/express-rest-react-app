@@ -1,4 +1,4 @@
-const SERVICE_URL = "https://localhost:8000/graphql";
+const SERVICE_URL = "http://localhost:8000/graphql";
 
 export class PostService {
 	async getAllPosts() {
@@ -80,7 +80,7 @@ export class PostService {
 	uploadImage(image) {
 		const formData = new FormData();
 		formData.append("image", image);
-		return fetch("https://localhost:8000/upload-image", {
+		return fetch("http://localhost:8000/upload-image", {
 			method: "PUT",
 			body: formData,
 			headers: {
