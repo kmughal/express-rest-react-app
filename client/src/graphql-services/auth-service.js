@@ -1,4 +1,4 @@
-const SERVICE_URL = "http://localhost:8000/graphql";
+const SERVICE_URL = "https://localhost:8000/graphql";
 
 export class AuthService {
 	signup(name, email, password) {

@@ -74,7 +74,7 @@ export class PostComponents extends React.Component {
 				<p>Empty posts</p>
 			) : (
 				posts.map((post, index) => {
-					const image = `http://localhost:8000/${post.image}`;
+					const image = `https://localhost:8000/${post.image}`;
 					return (
 						<article key={index}>
 							<h1>
