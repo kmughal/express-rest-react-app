@@ -106,6 +106,7 @@ app.put("/upload-image", async (req, res, next) => {
 	});
 });
 
+process.env.UV_THREADPOOL_SIZE = 2; 
 const SERVER_PORT = process.env.SERVER_PORT || 8000;
 
 mongoose
