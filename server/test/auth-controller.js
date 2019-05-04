@@ -3,15 +3,19 @@ const sinon = require("sinon");
 const { AuthController } = require("../controller/auth-controller");
 const { UserModel } = require("../models/user");
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const ctrl = new AuthController();
 let req = { body: { email: null } };
-const res = { statusCode: -1 };
-res.status = s => {
-	res.statusCode = s;
-	return res;
+const res = {
+	statusCode: -1,
+	status: s => {
+		res.statusCode = s;
+		return res;
+	},
+	json: json => (res.result = json),
+	result: null
 };
-res.json = j => res;
 
 describe("Auth controller", () => {
 	describe("Sign in tests", () => {
@@ -66,16 +70,18 @@ describe("Auth controller", () => {
 		});
 
 		it("should return username and token for valid account", async () => {
-			// req = { body: { email: "test@gmail.com", password: "hello" } };
-			// sinon.stub(UserModel, "findOne");
-			// UserModel.findOne.returns(true);
-			// sinon.stub(bcryptjs, "compare");
-			// bcryptjs.compare.returns(true);
-			// const next = () => {
-			// };
-			// const actual = await ctrl.signin(req, res, next);
-			// expect(actual.statusCode).equals(500);
-			// expect(actual.message).to.be.equal("Invalid password");
+			req = { body: { email: "test@gmail.com", password: "hello123" } };
+			const token = Math.random().toString();
+			const fakeUser = { name: "FAKE_USER", token };
+			sinon.stub(UserModel, "findOne");
+			UserModel.findOne.returns(fakeUser);
+			sinon.stub(bcryptjs, "compare");
+			bcryptjs.compare.returns(true);
+			sinon.stub(jwt, "sign");
+			jwt.sign.returns(token);
+			const actual = await ctrl.signin(req, res, () => {});
+			expect(res.statusCode).to.be.equal(200);
+			expect(res.result).to.deep.equal(fakeUser);
 		});
 	});
 });
