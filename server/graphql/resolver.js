@@ -35,10 +35,10 @@ exports.Root = {
 	},
 	editPost: async (args, req) => {
 		if (!req.isAuth) throw new Error("Auth token missing!");
-		
+
 		const { id, title, content, imageUrl } = args;
 		const posts = await PostRepository.save(id, title, content, imageUrl);
-		console.log(posts)
+		console.log(posts);
 		return posts;
 	},
 	getPosts: async (_, req) => {
@@ -49,41 +49,12 @@ exports.Root = {
 
 	createPost: async ({ title, content, imageUrl }, req) => {
 		if (!req.isAuth) throw new Error("Auth token is missing");
-
-		if (validator.isEmpty(imageUrl)) {
-			const missingImageFileError = new Error();
-			missingImageFileError.statusCode = 422;
-			missingImageFileError.message = "missing image!";
-			//return next(missingImageFileError);
-			throw missingImageFileError;
-		}
-		if (validator.isEmpty(title)) throw new Error("Title is empty");
-		if (validator.isEmpty(content)) throw new Error("Content is empty");
-
-		console.log(
-			"request to add a new post, title:",
+		const posts = await PostRepository.addNewPost(
+			req.userid,
 			title,
-			" content:",
 			content,
-			" image path : ",
 			imageUrl
 		);
-		const newPost = new PostModel({
-			title,
-			content,
-			image: imageUrl,
-			createdBy: req.userid,
-			status: "active"
-		});
-		await newPost.save();
-		const user = await UserModel.findById(req.userid);
-		user.posts.push(newPost);
-		await user.save();
-
-		const posts = await PostModel.find({});
-		// const io = IoFactory.get();
-		// io.emit("posts", { action: "post-created", posts, newPost });
-
 		return posts;
 	},
 	signIn: async (args, req) => {
