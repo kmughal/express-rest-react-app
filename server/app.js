@@ -106,8 +106,12 @@ app.put("/upload-image", async (req, res, next) => {
 	});
 });
 
-process.env.UV_THREADPOOL_SIZE = 2; 
+process.env.UV_THREADPOOL_SIZE = 2;
 const SERVER_PORT = process.env.SERVER_PORT || 8000;
+
+// override exec function for mongoose
+require("./commons/moogose-exec");
+
 
 mongoose
 	.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
