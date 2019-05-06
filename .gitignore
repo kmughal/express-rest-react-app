@@ -7,3 +7,4 @@ logs
 server.key
 server.cert
 package-lock.json
+.vscode
