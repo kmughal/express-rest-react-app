@@ -83,7 +83,7 @@ exports.PostRepository = class PostRepository {
 	}
 
 	static async get() {
-		const posts = await PostModel.find({});
+		const posts = await PostModel.find({}).enableCache();
 		const reducedPosts = posts.map(post => {
 			return {
 				title: post.title,
