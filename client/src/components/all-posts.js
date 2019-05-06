@@ -59,8 +59,9 @@ export class PostComponents extends React.Component {
 	}
 
 	postUpdaed(posts) {
+		
 		this.setState({
-			posts: (posts),
+			posts,
 			editPost: false,
 			selectedPost: { title: "", content: "" }
 		});

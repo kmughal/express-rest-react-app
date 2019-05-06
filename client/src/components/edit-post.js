@@ -24,7 +24,7 @@ export const EditComponent = props => {
 						service
 							.updatePost(id, title, content, image)
 							.then(response => response.json())
-							.then(posts => props.postUpdaed(posts))
+							.then(posts => props.postUpdaed(posts.data.editPost))
 							.catch(e => console.log(e));
 						event.preventDefault();
 					}}
