@@ -59,7 +59,6 @@ export class PostComponents extends React.Component {
 	}
 
 	postUpdaed(posts) {
-		console.log("posts:", posts);
 		this.setState({
 			posts: (posts),
 			editPost: false,
@@ -69,8 +68,9 @@ export class PostComponents extends React.Component {
 
 	render() {
 		const posts = this.state.posts;
+		if (posts == null) return(<p>Empty posts</p>)
 		const postsMarkup =
-			posts.length === 0 ? (
+			!posts && posts.length === 0 ? (
 				<p>Empty posts</p>
 			) : (
 				posts.map((post, index) => {
