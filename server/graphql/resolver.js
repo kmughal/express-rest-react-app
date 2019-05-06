@@ -3,10 +3,13 @@ const { UserModel } = require("../models/user");
 const { PostModel } = require("../models/post");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
-const {deleteImage} = require("../commons/file-helpers")
+const { deleteImage } = require("../commons/file-helpers");
+const { PostRepository } = require("./repository/post-repository");
+
 exports.Root = {
-	deletePost : async(args,req) => {
-	  if (!req.isAuth) throw new Error("Auth token is required to delete a post!");
+	deletePost: async (args, req) => {
+		if (!req.isAuth)
+			throw new Error("Auth token is required to delete a post!");
 		const id = args.id;
 
 		if (!id) {
@@ -28,59 +31,34 @@ exports.Root = {
 		const posts = await PostModel.find({});
 		// const io = IoFactory.get();
 		// io.emit("posts" , {action : "delete-post" , posts , post});
-		return (posts);
-	},
-	editPost : async(args,req) => {
-	  
-		if (!req.isAuth) throw new Error("Auth token missing!");
-		const id = args.id;
-		const post = await PostModel.findOne({ _id: id });
-		 
-		const updatedTitle = args.title,
-			updatedContent = args.content,
-			updatedImage = args.imageUrl;
-
-		post.title = updatedTitle;
-		post.content = updatedContent;
-		console.log("Edit post",updatedImage,updatedTitle , updatedContent)
-		if (updatedImage) {
-			await deleteImage(post.image);
-			post.image = updatedImage;
-		}
-	 
-		await post.save();
-		const posts = await PostModel.find({});
 		return posts;
-
 	},
-	getPosts: async (_,req) => {
-    
-    if (!req.isAuth) throw new Error("Auth token is missing")
-		const posts = await PostModel.find({});
-		const result = posts.map(post => {
-			return {
-				title: post.title,
-				content: post.content,
-				image: post.image,
-				_id: post._id
-			};
-		});
-		console.log(result);
-		return result;
+	editPost: async (args, req) => {
+		if (!req.isAuth) throw new Error("Auth token missing!");
+		
+		const { id, title, content, imageUrl } = args;
+		const posts = await PostRepository.save(id, title, content, imageUrl);
+		console.log(posts)
+		return posts;
+	},
+	getPosts: async (_, req) => {
+		if (!req.isAuth) throw new Error("Auth token is missing");
+		const posts = await PostRepository.get();
+		return posts;
 	},
 
-	createPost: async ({ title, content,imageUrl }, req) => {
-    if (!req.isAuth) throw new Error("Auth token is missing");
-		 
+	createPost: async ({ title, content, imageUrl }, req) => {
+		if (!req.isAuth) throw new Error("Auth token is missing");
+
 		if (validator.isEmpty(imageUrl)) {
 			const missingImageFileError = new Error();
 			missingImageFileError.statusCode = 422;
 			missingImageFileError.message = "missing image!";
-      //return next(missingImageFileError);
-      throw missingImageFileError;
-    }
-    if (validator.isEmpty(title)) throw new Error("Title is empty");
-    if (validator.isEmpty(content)) throw new Error("Content is empty");
+			//return next(missingImageFileError);
+			throw missingImageFileError;
+		}
+		if (validator.isEmpty(title)) throw new Error("Title is empty");
+		if (validator.isEmpty(content)) throw new Error("Content is empty");
 
 		console.log(
 			"request to add a new post, title:",
@@ -94,8 +72,8 @@ exports.Root = {
 			title,
 			content,
 			image: imageUrl,
-      createdBy: req.userid,
-      status : "active"
+			createdBy: req.userid,
+			status: "active"
 		});
 		await newPost.save();
 		const user = await UserModel.findById(req.userid);
@@ -131,8 +109,8 @@ exports.Root = {
 			{ name: user.name, id: String(user._id) },
 			"some-key",
 			{ expiresIn: "1h" }
-    );
-  
+		);
+
 		return { name: user.name, token };
 	},
 	createUser: async (args, req) => {
