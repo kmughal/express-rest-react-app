@@ -83,16 +83,7 @@ exports.PostRepository = class PostRepository {
 	}
 
 	static async get() {
-		const cachedPosts = await redisClient.get(ALL_POSTS);
-		console.log("from cache", cachedPosts);
-		let posts = null;
-
-		if (cachedPosts) posts = JSON.parse(cachedPosts);
-		else {
-			posts = await PostModel.find({});
-			await redisClient.set(ALL_POSTS, JSON.stringify(posts));
-		}
-
+		const posts = await PostModel.find({});
 		const reducedPosts = posts.map(post => {
 			return {
 				title: post.title,
