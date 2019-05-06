@@ -4,8 +4,9 @@ const { createRedisClient } = require("../infrastructure/redis-client");
 const exec = mongoose.Query.prototype.exec;
 const redisClient = createRedisClient();
 
-mongoose.Query.prototype.enableCache = function() {
+mongoose.Query.prototype.enableCache = function(options = {}) {
 	this.cacheResults = true;
+	this.hashKey = JSON.stringify(options.key || "default");
 	return this;
 };
 
@@ -26,7 +27,7 @@ mongoose.Query.prototype.exec = async function() {
 	);
 
 	// 2 check the value in redis if present then return from radis
-	const cacheValueString = await redisClient.get(key);
+	const cacheValueString = await redisClient.hget(this.hashKey, key);
 	if (cacheValueString) {
 		console.log("serving from cache");
 		const cacheValue = JSON.parse(cacheValueString);
@@ -37,6 +38,6 @@ mongoose.Query.prototype.exec = async function() {
 	}
 	// 3 fall back to original version, run the query and store in cache.
 	const result = await exec.apply(this, arguments);
-	redisClient.set(key, JSON.stringify(result));
+	redisClient.hset(this.hashKey, key, JSON.stringify(result), "EX", 10);
 	return result;
 };
