@@ -60,6 +60,9 @@ export class PostService {
 				query : `mutation {
 				  editPost(id:"${id}", title :"${title}" ,content :"${content}" , imageUrl :"${imageUrl}") {
 						title
+						_id 
+						content
+						image
 					}
 				}`
 			}
