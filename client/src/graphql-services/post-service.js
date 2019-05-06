@@ -33,9 +33,12 @@ export class PostService {
 			query : `
 			mutation {
 				deletePost(id :"${id}") {
-				 title
+					title
+					_id 
+					content
+					image
 			 }
-			 }
+			}
 			`
 		}
 	
