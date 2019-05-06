@@ -4,7 +4,7 @@
 This is a simple applicaiton which is created using:
 
 - Front end ( React )
-- Back end ( Express )
+- Back end ( Express, You can also run the server by docker file! )
 - GraphQl is plugged in
 - Hooked in Redis for cache
 
