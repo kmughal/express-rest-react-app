@@ -10,6 +10,32 @@ const ALL_POSTS = "ALL_POSTS";
 const redisClient = createRedisClient();
 
 exports.PostRepository = class PostRepository {
+	static async deletePost(postId, userId) {
+		if (!postId) {
+			return next(new Error("Post id not found"));
+		}
+
+		const post = await PostModel.findById(postId);
+		if (!post) {
+			return next(new Error("No post found"));
+		}
+
+		const imagePath = post.image;
+		deleteImage(imagePath)
+			.then(v => v)
+			.catch(e => console.log(e));
+
+		await PostModel.deleteOne({ _id: postId });
+
+		const user = await UserModel.findById(userId);
+		user.posts.pull(postId);
+		await user.save();
+		redisClient.del(ALL_POSTS);
+
+		const posts = await PostRepository.get();
+		return posts;
+	}
+
 	static async addNewPost(createdBy, title, content, imageUrl) {
 		if (validator.isEmpty(imageUrl)) {
 			const missingImageFileError = new Error();
@@ -33,7 +59,7 @@ exports.PostRepository = class PostRepository {
 		user.posts.push(newPost);
 		await user.save();
 		redisClient.del(ALL_POSTS);
-		
+
 		const posts = await PostRepository.get();
 		return posts;
 	}
