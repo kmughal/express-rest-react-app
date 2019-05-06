@@ -4,15 +4,20 @@ const { createRedisClient } = require("../infrastructure/redis-client");
 const exec = mongoose.Query.prototype.exec;
 const redisClient = createRedisClient();
 
-mongoose.Query.prototype.cache = function() {
-	this.enableCache = true;
+mongoose.Query.prototype.enableCache = function() {
+	this.cacheResults = true;
+	return this;
+};
+
+mongoose.Query.prototype.disableCache = function() {
+	this.cacheResults = false;
 	return this;
 };
 
 mongoose.Query.prototype.exec = async function() {
-	const enableCache = "enableCache" in this;
-  if (!enableCache) return exec.apply(this, arguments);
-  
+	const enableCache = "cacheResults" in this;
+	if (!enableCache) return exec.apply(this, arguments);
+
 	// 1 create a unique key
 	const collectionname = this.mongooseCollection.name;
 	const queryOption = this.getQuery();
