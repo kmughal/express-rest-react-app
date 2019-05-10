@@ -4,7 +4,13 @@ import { AuthService } from "../graphql-services/auth-service";
 export class SigninComponent extends React.Component {
 	constructor() {
 		super();
-		this.state = { email: "", password: "", errorsOccured: false, errors: [] , sendRequest : false };
+		this.state = {
+			email: "",
+			password: "",
+			errorsOccured: false,
+			errors: [],
+			sendRequest: false
+		};
 		this.authService = new AuthService();
 	}
 
@@ -19,7 +25,7 @@ export class SigninComponent extends React.Component {
 		this.state.password.trim().length === 0;
 
 	handleSubmit = e => {
-    this.setState({sendRequest : true})
+		this.setState({ sendRequest: true });
 		this.authService
 			.signin(this.state.email, this.state.password)
 			.then(res => {
@@ -32,14 +38,17 @@ export class SigninComponent extends React.Component {
 				return res.json();
 			})
 			.then(data => {
-			  
 				if (this.state.errorsOccured) {
 					const errors = data.errors[0].messages;
+					localStorage.removeItem("token", data.data.signIn.token);
+					localStorage.setItem("isAuthenticated", false);
 					this.setState({ errors });
 				} else {
 					if (data.data.signIn.token) {
-						localStorage.setItem("token" , data.data.signIn.token);
+						localStorage.setItem("token", data.data.signIn.token);
+						localStorage.setItem("isAuthenticated", true);
 						this.props.history.push("/all-posts");
+						window.location.reload();
 					}
 				}
 			})
@@ -48,7 +57,6 @@ export class SigninComponent extends React.Component {
 	};
 
 	render() {
-		 
 		let signinResponse = <p />;
 		if (this.state.errorsOccured) {
 			signinResponse = (
@@ -59,11 +67,11 @@ export class SigninComponent extends React.Component {
 				</ul>
 			);
 		} else {
-      if (this.state.sendRequest) signinResponse = <p>Success</p>
-    }
+			if (this.state.sendRequest) signinResponse = <p>Success</p>;
+		}
 		return (
 			<div>
-        {signinResponse}
+				{signinResponse}
 				<form onSubmit={this.handleSubmit}>
 					<div className="form-control">
 						<label>Email:</label>

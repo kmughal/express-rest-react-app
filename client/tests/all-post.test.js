@@ -1,8 +1,37 @@
 const puppeteer = require("puppeteer");
 
-test("add two numbers" , async () => {
-  expect(2).toEqual(2);
-  const browser = await puppeteer.launch({});
-  const page = browser.newPage();
+let browser = null;
+let page = null;
+beforeEach(async () => {
+	browser = await puppeteer.launch();
+	page = await browser.newPage();
+	await page.goto("http://localhost:3000");
+});
+
+afterEach(async () => {
+	await browser.close();
+});
+test("should have a sign in hyperlink", async done => {
+	const text = await page.$eval(
+		".top-action a:nth-child(2)",
+		el => el.innerHTML
+	);
+	expect(text).toEqual("Sign in");
+	done();
+});
+
+test("clicking sign in redirects user to sign in page", async done => {
+	await page.click(".top-action a:nth-child(2)");
+
+  const signinPageUrl = await page.url();
   
-})
+  expect(signinPageUrl).toMatch(/signin/gi)
+	done();
+});
+
+test("clicking sign out should take user to sign in page" ,async (done)=> {
+  await page.click(".top-action a:nth-child(1)");
+  const url = await page.url();
+  expect(url).toMatch(/signup/);
+  done();
+});
