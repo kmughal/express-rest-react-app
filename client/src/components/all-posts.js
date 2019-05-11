@@ -106,7 +106,7 @@ export class PostComponents extends React.Component {
 				})
 			);
 		return (
-			<section>
+			<section className="all-posts">
 				<EditComponent
 					editPost={this.state.editPost}
 					post={this.state.selectedPost}
