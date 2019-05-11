@@ -11,7 +11,7 @@ let browser = null;
 let page = null;
 
 beforeEach(async () => {
-	browser = await puppeteer.launch({ headless: false });
+	browser = await puppeteer.launch({ headless: true });
 	page = await browser.newPage();
 	await page.goto("http://localhost:3000");
 });
@@ -55,7 +55,7 @@ test("enter valid login details should sign in the user", async done => {
 });
 
 test("clicking sign out should take user to sign in page", async done => {
-	
+
 	await page.click(".top-action a");
 	const user = await createTestUserIfNotPresent();
 
