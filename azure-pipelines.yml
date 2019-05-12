@@ -16,7 +16,9 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    cd server
     npm install
   displayName: 'npm install'
-- script: npm test
+- script:
+    npm test
   displayName: 'run unit test'
