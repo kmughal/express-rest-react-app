@@ -22,25 +22,25 @@ test("when sign in, should redirects user to sign in page.", async done => {
 	done();
 });
 
-test("When login details are correct, should take user to all-post page.", async done => {
-	let user = { email: "test@gmail.com", password: "123456" };
-	if (process.env.NODE_ENV.toLowerCase() !== "ci") {
-		user = await createTestUserIfNotPresent();
-	}
-	const url = await page.login(user.email, user.password);
-	expect(url).toMatch(/all-posts/);
+// test("When login details are correct, should take user to all-post page.", async done => {
+// 	let user = { email: "test@gmail.com", password: "123456" };
+// 	if (process.env.NODE_ENV.toLowerCase() !== "ci") {
+// 		user = await createTestUserIfNotPresent();
+// 	}
+// 	const url = await page.login(user.email, user.password);
+// 	expect(url).toMatch(/all-posts/);
 
-	await deleteTestUser();
-	done();
-}, 30000);
+// 	await deleteTestUser();
+// 	done();
+// }, 30000);
 
-test("when user sign's out, user should be taken to sign in page.", async done => {
-	let user = { email: "test@gmail.com", password: "123456" };
-	if (process.env.NODE_ENV.toLowerCase() !== "ci") {
-		user = await createTestUserIfNotPresent();
-	}
-	const url = await page.signout(user.email, user.password);
-	expect(url).toMatch(/logout/);
-	await deleteTestUser();
-	done();
-}, 30000);
+// test("when user sign's out, user should be taken to sign in page.", async done => {
+// 	let user = { email: "test@gmail.com", password: "123456" };
+// 	if (process.env.NODE_ENV.toLowerCase() !== "ci") {
+// 		user = await createTestUserIfNotPresent();
+// 	}
+// 	const url = await page.signout(user.email, user.password);
+// 	expect(url).toMatch(/logout/);
+// 	await deleteTestUser();
+// 	done();
+// }, 30000);

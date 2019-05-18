@@ -1,28 +1,32 @@
 language: node_js
 before_script:
-  - sleep 15
-  - mongo test --eval 'db.users.insert({email:"test@gmail.com",password:"123456"});'
-node_js: 
-  - "8"
+- sleep 15
+- mongo test --eval 'db.users.insert({email:"test@gmail.com",password:"123456"});'
+node_js:
+- '8'
 dist: trusty
 services:
-  - mongodb
-  - redis-server
+- mongodb
+- redis-server
 env:
-  - REDIS_SERVER="redis://127.0.0.1:6379",
-  - MONGODB="mongodb://127.0.0.1:27017/test"
-  - SERVER_PORT=8000
-  - SKIP_PREFLIGHT_CHECK=true
+- REDIS_SERVER="redis://127.0.0.1:6379",
+- MONGODB="mongodb://127.0.0.1:27017/test"
+- SERVER_PORT=8000
+- SKIP_PREFLIGHT_CHECK=true
 cache:
   directories:
-    - node_modules
-    - server/node_modules
-    - client/node_modules
-install: 
-  - npm install
-  - npm run build
-  - npm run build:client-assets
+  - node_modules
+  - server/node_modules
+  - client/node_modules
+install:
+- npm install
+- npm run build
+- npm run build:client-assets
 script:
-  - nohup npm run start &
-  - sleep 3
-  - npm run test
+- nohup npm run start &
+- sleep 3
+- npm run test
+deploy:
+  provider: heroku
+  api_key:
+    secure: BPH2S4V+1oX7CnYXi0AcajdzHEe5N0kkaX1Jccbveu7bkDPk5oo4P7WXsSWc5LoudVbwvKOz5mnQEl0mPLwfk+qApJ4TTC0S2LPe31U6JxjCazi0zuMoMDLzdh4J4fH+7UkhoYztKMqITukAq1M8Vfhw48fuoWVHlpogGTnkA7wLfGMguPkLiae0VVk40uYmNO2MGba7JWk5zHkhF4/vVbDLv0wsAnnvkdZuWVchmMUXbfgjZuJk0jBK/ZJ9/PjXwdUeEe8FTKB4qT4eXxGVwkHEliWinUVHC6Rt0JapLC8+QZ0LqJIvw3sGNmLH4TWZAp6M00B4aawKSx5fpgXE1rof3MN9x3ZwT0KbPBiuXDAJ2AjayT+SF7jFRr/qhsPTq5cVZjk4jJ+uNQ9Ndw3W5Jtyd/jFXDePyoMvNyUyuFjIuB7xf/qRttVdYuAuPIaSKH63cYfzxxvXxYfBYRY9T/8OXk8tnLvUj8zFXQwR1LkEewC1Cchwe5w9VTWoQRQkNHUil+rWQxqm5LZMH8CooKjMpUCYGrkIgF6nhDX8YFKZYB96bAittyiMH5Q9Gmb2cR6SlibRsbfCc/u3x5fcG45WSFU17r18XY1B6A8yFfmaB5BpfxgdlP2x0bykBQZ0XorVynrQkL3g8nH/ThC+uy3twZo1vXlHLDI3qZYqdNY=

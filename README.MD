@@ -1,5 +1,5 @@
-# Introduction
 
+# Introduction [![Build Status](https://travis-ci.org/kmughal/express-react-graphql-mongo.svg?branch=master)](https://travis-ci.org/kmughal/express-react-graphql-mongo)
 
 This is a simple applicaiton which is created using:
 
@@ -7,10 +7,11 @@ This is a simple applicaiton which is created using:
 - Back end ( Express, You can also run the server by docker file! )
 - GraphQl is plugged in
 - Hooked in Redis for cache
+- Puppet
 
 Mongo db is used as data store.
 
-# SSL
+## SSL
 
 In order to get private key 
 
