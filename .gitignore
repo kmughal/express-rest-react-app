@@ -9,3 +9,4 @@ server.cert
 package-lock.json
 .vscode
 .env
+build
