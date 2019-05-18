@@ -12,6 +12,8 @@ const morgan = require("morgan");
 const fs = require("fs");
 const https = require("https");
 
+
+require("dotenv").config();
 // const cert = fs.readFileSync("server.cert");
 // const key = fs.readFileSync("server.key");
 
@@ -114,7 +116,7 @@ require("./commons/moogose-exec");
 
 
 mongoose
-	.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
+	.connect(process.env.MONGODB, { useNewUrlParser: true })
 	.then(v => {
 		//https..createServer({ cert: cert, key: key }, app)
 		require("http")
