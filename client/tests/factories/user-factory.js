@@ -2,9 +2,11 @@ const mongodb = require("mongodb");
 const bcryptjs = require("bcryptjs");
 
 let client = null;
+require('dotenv').config();
+
 const getDb = async collectionName => {
 	if (client === null)
-		client = await mongodb.connect(process.env.MONGODB, {
+		client = await mongodb.connect(process.env.MONGODB || 'mongodb://127.0.0.1:27017/test', {
 			useNewUrlParser: true
 		});
 

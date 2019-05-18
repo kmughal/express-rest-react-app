@@ -1,4 +1,7 @@
 language: node_js
+before_script:
+  - sleep 15
+  - mongo test --eval 'db.users.insert({email:"test@gmail.com",password:"123456"});'
 node_js: 
   - "8"
 dist: trusty
@@ -9,6 +12,7 @@ env:
   - REDIS_SERVER="redis://127.0.0.1:6379",
   - MONGODB="mongodb://127.0.0.1:27017/test"
   - SERVER_PORT=8000
+  - SKIP_PREFLIGHT_CHECK=true
 cache:
   directories:
     - node_modules
@@ -17,6 +21,7 @@ cache:
 install: 
   - npm install
   - npm run build
+  - npm run build:client-assets
 script:
   - nohup npm run start &
   - sleep 3

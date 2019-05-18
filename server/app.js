@@ -116,7 +116,7 @@ require("./commons/moogose-exec");
 
 
 mongoose
-	.connect(process.env.MONGODB, { useNewUrlParser: true })
+	.connect(process.env.MONGODB || 'mongodb://127.0.0.1:27017/test', { useNewUrlParser: true })
 	.then(v => {
 		//https..createServer({ cert: cert, key: key }, app)
 		require("http")
