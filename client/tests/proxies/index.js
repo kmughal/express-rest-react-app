@@ -6,7 +6,7 @@ exports.CustomPage = class CustomPage {
 	}
 
 	static async buildPage() {
-		const newBrowser = await puppeteer.launch({ headless: true });
+		const newBrowser = await puppeteer.launch({ headless: true , args : ['--no-sandbox']});
 		const newPage = await newBrowser.newPage();
 		const self = new CustomPage(newPage);
 
