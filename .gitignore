@@ -3,7 +3,7 @@ images
 launch.json
 settings.js
 nodemon.json
-logs
+log.txt
 server.key
 server.cert
 package-lock.json
