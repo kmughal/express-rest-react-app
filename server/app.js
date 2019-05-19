@@ -12,7 +12,6 @@ const morgan = require("morgan");
 const fs = require("fs");
 const https = require("https");
 
-
 require("dotenv").config();
 // const cert = fs.readFileSync("server.cert");
 // const key = fs.readFileSync("server.key");
@@ -41,10 +40,8 @@ const { postRoutes } = require("./routes/post");
 const { authRoutes } = require("./routes/auth");
 
 // Middlewares //
-const logStream = fs.createWriteStream(
-	path.join(__dirname, "logs", "log.txt"),
-	{ flags: "a" }
-);
+const logFilePath = path.join(__dirname, "log.txt");
+const logStream = fs.createWriteStream(logFilePath, { flags: "a" });
 
 app.use(compression());
 app.use(helmet());
@@ -114,9 +111,10 @@ const SERVER_PORT = process.env.SERVER_PORT || 8000;
 // override exec function for mongoose
 require("./commons/moogose-exec");
 
-
 mongoose
-	.connect(process.env.MONGODB || 'mongodb://127.0.0.1:27017/test', { useNewUrlParser: true })
+	.connect(process.env.MONGODB || "mongodb://127.0.0.1:27017/test", {
+		useNewUrlParser: true
+	})
 	.then(v => {
 		//https..createServer({ cert: cert, key: key }, app)
 		require("http")
